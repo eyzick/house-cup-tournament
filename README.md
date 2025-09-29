@@ -1,46 +1,132 @@
-# Getting Started with Create React App
+# Harry Potter House Cup Tournament
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A magical live scoring system for your Harry Potter themed Halloween party! Track points for all four Hogwarts houses with real-time updates.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- 🏆 **Live House Cup Display** - Beautiful visual display of current scores
+- ⚙️ **Admin Interface** - Add/remove points from your phone
+- 🔄 **Real-time Updates** - Points sync instantly across devices
+- 🎨 **Harry Potter Styling** - Magical themed design with authentic colors
+- 📱 **Mobile Friendly** - Works perfectly on phones and monitors
 
-### `npm start`
+## Quick Start
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+2. **Set up JSONBin (for data storage):**
+   - Go to [JSONBin.io](https://jsonbin.io/) and create a free account
+   - Create a new bin
+   - Copy your API key and Bin ID
+   - Create a `.env` file in the project root:
+     ```
+     REACT_APP_JSONBIN_API_KEY=your_api_key_here
+     REACT_APP_JSONBIN_BIN_ID=your_bin_id_here
+     ```
 
-### `npm test`
+3. **Start the development server:**
+   ```bash
+   npm start
+   ```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+4. **Open your browser** and navigate to `http://localhost:3000`
 
-### `npm run build`
+## Usage
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Viewing Live Scores (Monitor Display)
+- The main page shows all four houses with their current points
+- Updates automatically every 2 seconds
+- Perfect for displaying on a TV or monitor
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Admin Access (For Managing Points)
+- **Option 1:** Click the ⚙️ button in the bottom right
+- **Option 2:** Use keyboard shortcut: `Ctrl+Shift+A`
+- **Option 3:** Add `?admin=true` to the URL
+- **Password:** `avada kedavra` or `admin123` (you can change this in `src/App.tsx`)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Managing Points
+- **Quick Actions:** Pre-set buttons for +10, +25, +50, +100 points
+- **Manual Entry:** Specify exact points and add reasoning
+- **Reset All:** Returns all houses to 0 points
+- **Current Scores:** See all current standings
 
-### `npm run eject`
+## House Colors & Symbols
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- 🦁 **Gryffindor** - Red (#740001)
+- 🐍 **Slytherin** - Green (#1e4d13) 
+- 🦡 **Hufflepuff** - Yellow (#ecb939)
+- 🦅 **Ravenclaw** - Blue (#0e1a40)
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Party Setup Tips
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### For the Host (Mobile Admin)
+1. Bookmark the admin URL with `?admin=true`
+2. Keep your phone handy to award points throughout the night
+3. Use the quick action buttons for common point values
+4. Add custom reasons for extra magic!
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### For Display (Monitor/TV)
+1. Open the site on a computer/TV browser in fullscreen
+2. Navigate to `http://localhost:3000`
+3. Press F11 for fullscreen mode
+4. The display will auto-refresh every 2 seconds
 
-## Learn More
+## Development
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+# Install dependencies
+npm install
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+# Start development server
+npm start
+
+# Build for production
+npm run build
+```
+
+## Customization
+
+### Change Admin Password
+Edit `src/App.tsx` line 36:
+```typescript
+if (enteredPassword === 'your_new_password') {
+```
+
+### Change Update Frequency
+Edit `src/services/dataService.ts` line 169:
+```typescript
+intervalMs: number = 2000  // Change to desired milliseconds
+```
+
+### Modify House Colors/Names
+Edit `src/types/index.ts` for customizations.
+
+## Troubleshooting
+
+**"API not configured" Error:**
+- Make sure your `.env` file has the correct JSONBin credentials
+- Restart the development server after adding environment variables
+
+**Points Not Updating:**
+- Check your internet connection
+- Verify JSONBin credentials are correct
+- Check browser console for errors
+
+**Admin Panel Won't Open:**
+- Try the keyboard shortcut: `Ctrl+Shift+A`
+- Make sure you're using the correct password
+- Try refreshing the page
+
+## Tech Stack
+
+- React with TypeScript
+- JSONBin for data persistence
+- Radix UI for icons
+- CSS gradients and animations for magical effects
+
+---
+
+**Happy Halloween and may the best house win!** 🧙‍♀️✨
