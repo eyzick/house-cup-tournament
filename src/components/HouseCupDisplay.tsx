@@ -90,7 +90,6 @@ const HouseCard: React.FC<HouseCardProps> = ({ house, points, position, isLeadin
 
 const HouseCupDisplay: React.FC<HouseCupDisplayProps> = ({ autoRefresh = true }) => {
   const [houseData, setHouseData] = useState<StoredHouseData | null>(null);
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -103,7 +102,6 @@ const HouseCupDisplay: React.FC<HouseCupDisplayProps> = ({ autoRefresh = true })
         const data = await fetchHouseData();
         
         setHouseData(data);
-        setLastUpdated(new Date(data.lastUpdated));
         setError(null);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load house data');
@@ -120,14 +118,12 @@ const HouseCupDisplay: React.FC<HouseCupDisplayProps> = ({ autoRefresh = true })
 
     const unsubscribe = subscribeToUpdates((data) => {
       setHouseData(data);
-      setLastUpdated(new Date(data.lastUpdated));
     });
 
     const pollInterval = setInterval(async () => {
       try {
         const data = await fetchHouseData();
         setHouseData(data);
-        setLastUpdated(new Date(data.lastUpdated));
       } catch (error) {
         console.error('Polling error:', error);
       }
