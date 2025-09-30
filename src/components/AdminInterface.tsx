@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PlusIcon, MinusIcon, UpdateIcon, StarIcon, Cross2Icon, ChevronDownIcon, ChevronRightIcon } from '@radix-ui/react-icons';
-import { HOUSE_NAMES, HOUSE_COLORS, HouseData, StoredHouseData, PointTransaction } from '../types';
-import { addPoints, removePoints, resetAllPoints, fetchHouseData, isSupabaseConfigured } from '../services/supabaseService';
+import { HOUSE_NAMES, HOUSE_COLORS, HouseData, StoredHouseData, PointTransaction, GameAction } from '../types';
+import { addPoints, removePoints, resetAllPoints, fetchHouseData, isSupabaseConfigured, subscribeToUpdates } from '../services/supabaseService';
 import styles from './AdminInterface.module.css';
 
 interface AdminInterfaceProps {
@@ -14,6 +14,7 @@ interface PointInput {
   reason: string;
 }
 
+
 const QuickPointButtons = [
   { label: '+100', points: 100 },
   { label: '+50', points: 50 },
@@ -23,6 +24,11 @@ const QuickPointButtons = [
   { label: '-25', points: -25 },
   { label: '-50', points: -50 },
   { label: '-100', points: -100 }
+];
+
+const GameActions: GameAction[] = [
+  { key: 'beer_pong_win', label: 'Beer Pong Win', points: 50, reason: 'Beer Pong win' },
+  { key: 'stack_cup_loss', label: 'Stack Cup Loss', points: -50, reason: 'Stack Cup loss' }
 ];
 
 const AdminInterface: React.FC<AdminInterfaceProps> = ({ onClose }) => {
@@ -39,6 +45,24 @@ const AdminInterface: React.FC<AdminInterfaceProps> = ({ onClose }) => {
 
   useEffect(() => {
     loadData();
+  }, []);
+
+  useEffect(() => {
+    if (!isSupabaseConfigured()) {
+      return;
+    }
+
+    const unsubscribe = subscribeToUpdates((data) => {
+      setHouseData(data);
+    });
+
+    return () => {
+      try {
+        unsubscribe && unsubscribe();
+      } catch (e) {
+        // noop
+      }
+    };
   }, []);
 
   const loadData = async () => {
@@ -116,6 +140,27 @@ const AdminInterface: React.FC<AdminInterfaceProps> = ({ onClose }) => {
 
   const handleQuickPoints = (points: number) => {
     handleAddPoints(points, `Quick ${points > 0 ? 'bonus' : 'deduction'}`);
+  };
+
+  const handleGameAction = async (action: GameAction) => {
+    if (!isSupabaseConfigured()) {
+      setError('JSONBin API not configured');
+      return;
+    }
+
+    try {
+      setIsProcessing(`${action.points >= 0 ? 'Applying' : 'Applying'} ${action.label} for ${HOUSE_NAMES[inputData.house]}`);
+      if (action.points >= 0) {
+        await addPoints(inputData.house, action.points, action.reason);
+      } else {
+        await removePoints(inputData.house, Math.abs(action.points), action.reason);
+      }
+      await loadData();
+      setIsProcessing(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to apply game action');
+      setIsProcessing(null);
+    }
   };
 
   const formatTransactionHistory = (transactions: PointTransaction[]) => {
@@ -242,6 +287,24 @@ const AdminInterface: React.FC<AdminInterfaceProps> = ({ onClose }) => {
               ))}
             </div>
           </div>
+
+        <div className={styles['quick-actions']}>
+          <h3>Game Actions</h3>
+          <div className={styles['quick-buttons']}>
+            {GameActions.map((action) => (
+              <button
+                key={action.key}
+                className={styles['quick-btn']}
+                data-negative={action.points < 0 ? "true" : "false"}
+                onClick={() => handleGameAction(action)}
+                disabled={!!isProcessing}
+                title={`${action.label} (${action.points > 0 ? '+' : ''}${action.points})`}
+              >
+                {action.label} ({action.points > 0 ? '+' : ''}{action.points})
+              </button>
+            ))}
+          </div>
+        </div>
 
           <div className={styles['manual-input']}>
             <h3>Manual Point Entry</h3>

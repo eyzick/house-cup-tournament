@@ -24,6 +24,13 @@ export interface StoredHouseData {
   lastUpdated: number;
 }
 
+export interface GameAction {
+  key: string;    
+  label: string; 
+  points: number; 
+  reason: string; 
+}
+
 export const HOUSE_COLORS = {
   gryffindor: '#740001',
   slytherin: '#1e4d13',

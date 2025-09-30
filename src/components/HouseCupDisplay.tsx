@@ -14,6 +14,47 @@ interface HouseCardProps {
   isLeading?: boolean;
 }
 
+const ScoreNumber: React.FC<{ value: number; duration?: number }> = ({ value, duration = 900 }) => {
+  const [displayValue, setDisplayValue] = useState<number>(value);
+  const [animating, setAnimating] = useState<boolean>(false);
+  const fromRef = React.useRef<number>(value);
+  const rafRef = React.useRef<number | null>(null);
+
+  useEffect(() => {
+    if (value === fromRef.current) return;
+
+    const startValue = fromRef.current;
+    const endValue = value;
+    const startTime = performance.now();
+    setAnimating(true);
+
+    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
+    const tick = (now: number) => {
+      const elapsed = now - startTime;
+      const t = Math.min(1, elapsed / duration);
+      const eased = easeOutCubic(t);
+      const current = Math.round(startValue + (endValue - startValue) * eased);
+      setDisplayValue(current);
+      if (t < 1) {
+        rafRef.current = requestAnimationFrame(tick);
+      } else {
+        fromRef.current = endValue;
+        setAnimating(false);
+      }
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    };
+  }, [value, duration]);
+
+  return (
+    <span className={`${styles['points-number']} ${animating ? styles['points-animating'] : ''}`}>{displayValue}</span>
+  );
+};
+
 const HouseCard: React.FC<HouseCardProps> = ({ house, points, position, isLeading }) => {
   const color = HOUSE_COLORS[house];
   const name = HOUSE_NAMES[house];
@@ -28,13 +69,20 @@ const HouseCard: React.FC<HouseCardProps> = ({ house, points, position, isLeadin
         <span className={styles['house-name']}>{name}</span>
       </div>
       <div className={styles['points-display']}>
-        <span className={styles['points-number']}>{points}</span>
+        <ScoreNumber value={points} />
         <span className={styles['points-label']}>points</span>
       </div>
       {isLeading && (
-        <div className={styles['crown-container']}>
-          <div className={styles.crown}>👑</div>
-        </div>
+        <>
+          <div className={styles['crown-container']}>
+            <div className={styles.crown}>👑</div>
+          </div>
+          <div className={styles['sparkles']}>
+            {Array.from({ length: 5 }, (_, i) => (
+              <span key={i}></span>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
@@ -140,17 +188,17 @@ const HouseCupDisplay: React.FC<HouseCupDisplayProps> = ({ autoRefresh = true })
 
   return (
     <div className={styles['house-cup-display']}>
+      <div className={styles['twinkling-stars']} aria-hidden>
+        {Array.from({ length: 20 }, (_, i) => (
+          <span key={i}></span>
+        ))}
+      </div>
       <div className={styles['cup-header']}>
         <div className={styles['main-crest-container']}>
           <img src={`${process.env.PUBLIC_URL}/house-crest.png`} alt="Hogwarts Crest" className={styles['main-crest']} />
         </div>
         <h1 className={styles['cup-title']}>🏆 House Cup Tournament 🏆</h1>
         <div className={styles['cup-subtitle']}>Live Scoring</div>
-        {lastUpdated && (
-          <div className={styles['last-updated']}>
-            Last updated: {lastUpdated.toLocaleTimeString()}
-          </div>
-        )}
       </div>
 
       <div className={styles['houses-grid']}>
@@ -182,7 +230,6 @@ const HouseCupDisplay: React.FC<HouseCupDisplayProps> = ({ autoRefresh = true })
         <div className={styles['live-indicator']}>
           <div className={styles['live-pulse']}></div>
           <span>Live Updates</span>
-          <small>(Real-time + Auto-refresh)</small>
         </div>
       </div>
     </div>

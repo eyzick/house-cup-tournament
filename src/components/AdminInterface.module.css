@@ -171,6 +171,16 @@
   min-width: 3rem;
 }
 
+.points-animating {
+  animation: pulse-pop 0.6s ease;
+}
+
+@keyframes pulse-pop {
+  0% { transform: scale(1); filter: brightness(1); }
+  40% { transform: scale(1.15); filter: brightness(1.2); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+
 .quick-actions {
   margin-bottom: 2rem;
 }
