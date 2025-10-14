@@ -2,7 +2,7 @@
   "name": "house-cup",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://eyzick.github.io/house-cup-tournament",
+  "homepage": "https://house-cup.eyzick.com",
   "dependencies": {
     "@radix-ui/react-icons": "^1.3.2",
     "@supabase/supabase-js": "^2.58.0",
