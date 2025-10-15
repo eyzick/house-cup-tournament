@@ -106,7 +106,7 @@
 
 .cup-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 1.5rem;
 }
 
 .main-crest-container {
@@ -114,8 +114,8 @@
 }
 
 .main-crest {
-  width: 120px;
-  height: 120px;
+  width: 80px;
+  height: 80px;
   object-fit: contain;
   filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.6));
   animation: crestGlow 3s ease-in-out infinite alternate;
@@ -128,7 +128,7 @@
 
 .cup-title {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 3.5rem;
+  font-size: 2.5rem;
   font-weight: 600;
   margin: 0 0 0.5rem 0;
   text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
@@ -147,9 +147,9 @@
 }
 
 .cup-subtitle {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   color: #FFD700;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
 }
 
@@ -191,23 +191,28 @@
 
 .houses-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
   gap: 2rem;
-  max-width: 1400px;
-  margin: 0 auto 3rem;
+  height: calc(100vh - 400px);
+  margin: 0 auto 2rem;
+  max-width: 95vw;
 }
 
 .house-card {
   background: rgba(255, 255, 255, 0.05);
-  border: 2px solid rgba(255, 215, 0, 0.3);
-  border-radius: 20px;
-  padding: 2rem;
+  border: 3px solid rgba(255, 215, 0, 0.3);
+  border-radius: 25px;
+  padding: 3rem;
   text-align: center;
   position: relative;
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .house-card::before {
@@ -296,26 +301,26 @@
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .position-number {
   background: linear-gradient(135deg, #FFD700, #FFA500);
   color: #000;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 4rem;
+  height: 4rem;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  font-size: 2rem;
   font-weight: 800;
   box-shadow: 
     0 3px 6px rgba(0, 0, 0, 0.4),
     0 0 0 2px rgba(255, 215, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
   border: 2px solid rgba(0, 0, 0, 0.2);
-  margin-right: 0.5rem;
+  margin-right: 1rem;
 }
 
 .house-emblem {
@@ -327,19 +332,19 @@
 
 .house-name {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 2rem;
+  font-size: 3rem;
   font-weight: 600;
   color: var(--house-color);
   text-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
 }
 
 .points-display {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .points-number {
   display: block;
-  font-size: 3.5rem;
+  font-size: 5rem;
   font-weight: bold;
   color: #FFD700;
   text-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
@@ -363,7 +368,7 @@
 }
 
 .points-label {
-  font-size: 1.2rem;
+  font-size: 1.8rem;
   color: #ccc;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -388,7 +393,7 @@
 
 .cup-footer {
   text-align: center;
-  padding: 2rem;
+  padding: 1rem;
   background: rgba(0, 0, 0, 0.3);
   border-radius: 15px;
   backdrop-filter: blur(5px);
@@ -398,8 +403,8 @@
 .stats-summary {
   display: flex;
   justify-content: center;
-  gap: 3rem;
-  margin-bottom: 1rem;
+  gap: 2rem;
+  margin-bottom: 0.5rem;
 }
 
 .stat {
@@ -496,18 +501,45 @@
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+  .houses-grid {
+    height: calc(100vh - 350px);
+    gap: 1.5rem;
+  }
+
+  .house-card {
+    padding: 2rem;
+  }
+
+  .house-name {
+    font-size: 2.5rem;
+  }
+
+  .points-number {
+    font-size: 4rem;
+  }
+
+  .position-number {
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.5rem;
+  }
+}
+
 @media (max-width: 768px) {
   .house-cup-display {
     padding: 1rem;
   }
 
   .cup-title {
-    font-size: 2.5rem;
+    font-size: 2rem;
   }
 
   .houses-grid {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    grid-template-rows: repeat(4, 1fr);
+    height: calc(100vh - 300px);
+    gap: 1rem;
   }
 
   .house-card {
@@ -515,11 +547,17 @@
   }
 
   .house-name {
-    font-size: 1.5rem;
+    font-size: 2rem;
   }
 
   .points-number {
-    font-size: 2.5rem;
+    font-size: 3rem;
+  }
+
+  .position-number {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.2rem;
   }
 
   .stats-summary {

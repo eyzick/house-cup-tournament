@@ -28,7 +28,11 @@ const QuickPointButtons = [
 
 const GameActions: GameAction[] = [
   { key: 'beer_pong_win', label: 'Beer Pong Win', points: 50, reason: 'Beer Pong win' },
-  { key: 'stack_cup_loss', label: 'Stack Cup Loss', points: -50, reason: 'Stack Cup loss' }
+  { key: 'stack_cup_loss', label: 'Stack Cup Loss', points: -50, reason: 'Stack Cup loss' },
+  { key: 'spilled_drink', label: 'Spilled Drink', points: -20, reason: 'Spilled drink' },
+  { key: 'take_out_trash', label: 'Take Out Trash', points: 10, reason: 'Take out trash' },
+  { key: 'shotgun_drink', label: 'Shotgun Drink', points: 10, reason: 'Shotgun drink' },
+  { key: 'break_lego_set', label: 'Break Lego Set', points: -1000, reason: 'Break Lego set' },
 ];
 
 const AdminInterface: React.FC<AdminInterfaceProps> = ({ onClose }) => {
