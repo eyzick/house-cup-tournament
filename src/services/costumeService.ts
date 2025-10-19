@@ -33,22 +33,67 @@ function generateVoterId(): string {
 
 export async function uploadCostumeImage(file: File): Promise<string> {
   try {
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+    // Create a canvas to process the image and maintain quality
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
     
-    const { error } = await supabase.storage
-      .from('costume-images')
-      .upload(fileName, file);
-    
-    if (error) {
-      throw new Error(`Failed to upload image: ${error.message}`);
-    }
-    
-    const { data: { publicUrl } } = supabase.storage
-      .from('costume-images')
-      .getPublicUrl(fileName);
-    
-    return publicUrl;
+    return new Promise((resolve, reject) => {
+      img.onload = () => {
+        // Calculate dimensions to maintain aspect ratio while limiting size
+        const maxWidth = 1200;
+        const maxHeight = 1200;
+        let { width, height } = img;
+        
+        // Scale down if too large, but maintain aspect ratio
+        if (width > maxWidth || height > maxHeight) {
+          const ratio = Math.min(maxWidth / width, maxHeight / height);
+          width = width * ratio;
+          height = height * ratio;
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        // Draw image with high quality settings
+        ctx!.imageSmoothingEnabled = true;
+        ctx!.imageSmoothingQuality = 'high';
+        ctx!.drawImage(img, 0, 0, width, height);
+        
+        // Convert to blob with high quality
+        canvas.toBlob(async (blob) => {
+          if (!blob) {
+            reject(new Error('Failed to process image'));
+            return;
+          }
+          
+          const fileExt = file.name.split('.').pop() || 'jpg';
+          const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+          
+          const { error } = await supabase.storage
+            .from('costume-images')
+            .upload(fileName, blob, {
+              contentType: blob.type,
+              cacheControl: '3600',
+              upsert: false
+            });
+          
+          if (error) {
+            reject(new Error(`Failed to upload image: ${error.message}`));
+            return;
+          }
+          
+          const { data: { publicUrl } } = supabase.storage
+            .from('costume-images')
+            .getPublicUrl(fileName);
+          
+          resolve(publicUrl);
+        }, 'image/jpeg', 0.95); // High quality JPEG (95%)
+      };
+      
+      img.onerror = () => reject(new Error('Failed to load image'));
+      img.src = URL.createObjectURL(file);
+    });
   } catch (error) {
     throw error;
   }
