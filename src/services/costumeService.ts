@@ -1,5 +1,5 @@
 import { supabase } from '../supabase/client';
-import { CostumeEntry, CostumeVote, CostumeResult, VoteSubmission } from '../types';
+import { CostumeEntry, CostumeResult, VoteSubmission } from '../types';
 
 function generateVoterId(): string {
   let voterId = localStorage.getItem('costume_voter_id');
@@ -36,7 +36,7 @@ export async function uploadCostumeImage(file: File): Promise<string> {
     const fileExt = file.name.split('.').pop();
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
     
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from('costume-images')
       .upload(fileName, file);
     
