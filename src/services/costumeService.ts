@@ -1,5 +1,5 @@
 import { supabase } from '../supabase/client';
-import { CostumeEntry, CostumeResult, VoteSubmission } from '../types';
+import { CostumeEntry, CostumeResult, VoteSubmission, VotingSettings } from '../types';
 
 function generateVoterId(): string {
   let voterId = localStorage.getItem('costume_voter_id');
@@ -229,5 +229,50 @@ export async function getTotalVoteCount(): Promise<number> {
     return count || 0;
   } catch (error) {
     return 0;
+  }
+}
+
+export async function getVotingSettings(): Promise<VotingSettings> {
+  try {
+    const { data, error } = await supabase
+      .from('voting_settings')
+      .select('*')
+      .eq('id', 1)
+      .single();
+    
+    if (error && error.code !== 'PGRST116') {
+      throw new Error(`Failed to fetch voting settings: ${error.message}`);
+    }
+    
+    if (!data) {
+      return { voting_enabled: false, last_updated: new Date().toISOString() };
+    }
+    
+    return {
+      voting_enabled: data.voting_enabled,
+      last_updated: data.last_updated
+    };
+  } catch (error) {
+    return { voting_enabled: false, last_updated: new Date().toISOString() };
+  }
+}
+
+export async function updateVotingSettings(enabled: boolean): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from('voting_settings')
+      .upsert({
+        id: 1,
+        voting_enabled: enabled,
+        last_updated: new Date().toISOString()
+      });
+    
+    if (error) {
+      throw new Error(`Failed to update voting settings: ${error.message}`);
+    }
+    
+    return true;
+  } catch (error) {
+    throw error;
   }
 }

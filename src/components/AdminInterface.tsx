@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { PlusIcon, MinusIcon, UpdateIcon, StarIcon, Cross2Icon, ChevronDownIcon, ChevronRightIcon, UploadIcon, TrashIcon } from '@radix-ui/react-icons';
-import { HOUSE_NAMES, HOUSE_COLORS, HouseData, StoredHouseData, PointTransaction, GameAction, CostumeEntry, CostumeResult } from '../types';
+import { HOUSE_NAMES, HOUSE_COLORS, HouseData, StoredHouseData, PointTransaction, GameAction, CostumeEntry, CostumeResult, VotingSettings } from '../types';
 import { addPoints, removePoints, resetAllPoints, fetchHouseData, isSupabaseConfigured, subscribeToUpdates } from '../services/supabaseService';
-import { addCostumeEntry, getCostumeEntries, deleteCostumeEntry, getCostumeResults, getTotalVoteCount } from '../services/costumeService';
+import { addCostumeEntry, getCostumeEntries, deleteCostumeEntry, getCostumeResults, getTotalVoteCount, getVotingSettings, updateVotingSettings } from '../services/costumeService';
 import styles from './AdminInterface.module.css';
 
 interface AdminInterfaceProps {
@@ -62,6 +62,7 @@ const AdminInterface: React.FC<AdminInterfaceProps> = ({ onClose }) => {
   const [totalVotes, setTotalVotes] = useState(0);
   const [costumeName, setCostumeName] = useState('');
   const [costumeImage, setCostumeImage] = useState<File | null>(null);
+  const [votingSettings, setVotingSettings] = useState<VotingSettings>({ voting_enabled: false, last_updated: '' });
 
   // Tab state
   const [activeTab, setActiveTab] = useState<'points' | 'costumes'>('points');
@@ -73,14 +74,16 @@ const AdminInterface: React.FC<AdminInterfaceProps> = ({ onClose }) => {
 
   const loadCostumeData = async () => {
     try {
-      const [entries, results, voteCount] = await Promise.all([
+      const [entries, results, voteCount, settings] = await Promise.all([
         getCostumeEntries(),
         getCostumeResults(),
-        getTotalVoteCount()
+        getTotalVoteCount(),
+        getVotingSettings()
       ]);
       setCostumeEntries(entries);
       setCostumeResults(results);
       setTotalVotes(voteCount);
+      setVotingSettings(settings);
     } catch (err) {
       console.error('Failed to load costume data:', err);
     }
@@ -117,6 +120,19 @@ const AdminInterface: React.FC<AdminInterfaceProps> = ({ onClose }) => {
       setIsProcessing(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete costume');
+      setIsProcessing(null);
+    }
+  };
+
+  const handleToggleVoting = async () => {
+    try {
+      setIsProcessing('Updating voting settings...');
+      const newEnabled = !votingSettings.voting_enabled;
+      await updateVotingSettings(newEnabled);
+      setVotingSettings(prev => ({ ...prev, voting_enabled: newEnabled }));
+      setIsProcessing(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update voting settings');
       setIsProcessing(null);
     }
   };
@@ -499,6 +515,33 @@ const AdminInterface: React.FC<AdminInterfaceProps> = ({ onClose }) => {
           {/* Costume Tab Content */}
           {activeTab === 'costumes' && (
             <div className={styles['tab-content']}>
+              <div className={styles['voting-control']}>
+                <div className={styles['voting-toggle']}>
+                  <h3>Voting Control</h3>
+                  <div className={styles['toggle-container']}>
+                    <label className={styles['toggle-label']}>
+                      <input
+                        type="checkbox"
+                        checked={votingSettings.voting_enabled}
+                        onChange={handleToggleVoting}
+                        disabled={!!isProcessing}
+                        className={styles['toggle-input']}
+                      />
+                      <span className={styles['toggle-slider']}></span>
+                      <span className={styles['toggle-text']}>
+                        {votingSettings.voting_enabled ? 'Voting Open' : 'Voting Closed'}
+                      </span>
+                    </label>
+                  </div>
+                  <p className={styles['voting-status']}>
+                    {votingSettings.voting_enabled 
+                      ? '✅ People can now vote on costumes' 
+                      : '🔒 Voting is disabled - upload all costumes first'
+                    }
+                  </p>
+                </div>
+              </div>
+
               <div className={styles['costume-upload']}>
                 <div className={styles['costume-header']}>
                   <h3>Add New Costume Entry</h3>

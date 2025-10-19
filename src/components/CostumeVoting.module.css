@@ -387,3 +387,40 @@
     font-size: 1.1rem;
   }
 }
+
+.votingDisabled {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: rgba(255, 215, 0, 0.05);
+  border: 2px solid rgba(255, 215, 0, 0.2);
+  border-radius: 15px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.disabledIcon {
+  width: 3rem;
+  height: 3rem;
+  color: #ff6b6b;
+  margin-bottom: 1rem;
+}
+
+.votingDisabled h2 {
+  color: #FFD700;
+  margin: 0 0 1rem 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+}
+
+.votingDisabled p {
+  color: #ccc;
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+.disabledNote {
+  color: #999;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  font-style: italic;
+}

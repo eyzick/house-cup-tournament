@@ -85,3 +85,8 @@ export interface VoteSubmission {
   second_choice: number | null;
   third_choice: number | null;
 }
+
+export interface VotingSettings {
+  voting_enabled: boolean;
+  last_updated: string;
+}

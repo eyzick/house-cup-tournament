@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StarIcon, CheckIcon, Cross2Icon } from '@radix-ui/react-icons';
 import { CostumeEntry, VoteSubmission } from '../types';
-import { getCostumeEntries, submitVote, hasUserVoted } from '../services/costumeService';
+import { getCostumeEntries, submitVote, hasUserVoted, getVotingSettings } from '../services/costumeService';
 import styles from './CostumeVoting.module.css';
 
 const CostumeVoting: React.FC = () => {
@@ -10,6 +10,7 @@ const CostumeVoting: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [hasVoted, setHasVoted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [votingEnabled, setVotingEnabled] = useState(false);
   const [vote, setVote] = useState<VoteSubmission>({
     first_choice: null,
     second_choice: null,
@@ -24,12 +25,14 @@ const CostumeVoting: React.FC = () => {
   const loadData = async () => {
     try {
       setLoading(true);
-      const [entries, voted] = await Promise.all([
+      const [entries, voted, settings] = await Promise.all([
         getCostumeEntries(),
-        hasUserVoted()
+        hasUserVoted(),
+        getVotingSettings()
       ]);
       setCostumeEntries(entries);
       setHasVoted(voted);
+      setVotingEnabled(settings.voting_enabled);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load costume entries');
     } finally {
@@ -38,7 +41,7 @@ const CostumeVoting: React.FC = () => {
   };
 
   const handleVoteSelection = (costumeId: number, position: 'first_choice' | 'second_choice' | 'third_choice') => {
-    if (hasVoted) return;
+    if (hasVoted || !votingEnabled) return;
 
     setVote(prev => {
       const newVote = { ...prev };
@@ -63,7 +66,7 @@ const CostumeVoting: React.FC = () => {
   };
 
   const handleSubmitVote = async () => {
-    if (hasVoted) return;
+    if (hasVoted || !votingEnabled) return;
 
     const hasAnyVote = vote.first_choice || vote.second_choice || vote.third_choice;
     if (!hasAnyVote) {
@@ -155,6 +158,21 @@ const CostumeVoting: React.FC = () => {
           <p>Thank you for participating in the costume contest.</p>
           <p className={styles.votedNote}>
             Results will be announced at the end of the night.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!votingEnabled) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.votingDisabled}>
+          <Cross2Icon className={styles.disabledIcon} />
+          <h2>Voting Not Yet Open</h2>
+          <p>Costume voting will begin once all entries are uploaded.</p>
+          <p className={styles.disabledNote}>
+            Check back later when voting opens!
           </p>
         </div>
       </div>
