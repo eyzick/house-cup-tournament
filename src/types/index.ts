@@ -51,3 +51,37 @@ export const HOUSE_CRESTS = {
   hufflepuff: `${process.env.PUBLIC_URL}/hufflepuff.png`,
   ravenclaw: `${process.env.PUBLIC_URL}/ravenclaw.png`
 } as const;
+
+// Costume voting types
+export interface CostumeEntry {
+  id: number;
+  name: string;
+  image_url: string;
+  uploaded_at: string;
+  created_by: string;
+}
+
+export interface CostumeVote {
+  id: number;
+  voter_id: string;
+  first_choice: number | null;
+  second_choice: number | null;
+  third_choice: number | null;
+  voted_at: string;
+}
+
+export interface CostumeResult {
+  costume_id: number;
+  costume_name: string;
+  costume_image_url: string;
+  first_place_votes: number;
+  second_place_votes: number;
+  third_place_votes: number;
+  total_points: number;
+}
+
+export interface VoteSubmission {
+  first_choice: number | null;
+  second_choice: number | null;
+  third_choice: number | null;
+}

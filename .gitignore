@@ -25,3 +25,6 @@ docs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+supabase/complete_costume_setup.sql
+supabase/costume_voting_tables.sql
+supabase/storage_policies.sql

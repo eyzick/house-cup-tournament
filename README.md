@@ -32,7 +32,7 @@ A magical live scoring system for your Harry Potter themed Halloween party! Trac
    npm start
    ```
 
-4. **Open your browser** and navigate to `http://localhost:3000`
+4. **Open your browser** and navigate to `https://house-cup.eyzick.com`
 
 ## Usage
 
@@ -70,7 +70,7 @@ A magical live scoring system for your Harry Potter themed Halloween party! Trac
 
 ### For Display (Monitor/TV)
 1. Open the site on a computer/TV browser in fullscreen
-2. Navigate to `http://localhost:3000`
+2. Navigate to `https://house-cup.eyzick.com`
 3. Press F11 for fullscreen mode
 4. The display will auto-refresh every 2 seconds
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import HouseCupDisplay from './components/HouseCupDisplay';
 import AdminInterface from './components/AdminInterface';
+import CostumeVoting from './components/CostumeVoting';
 import styles from './App.module.css';
 
 function App() {
@@ -14,6 +15,11 @@ function App() {
       setShowPasswordPrompt(true);
     }
   }, []);
+
+  // Check if this is the voting page
+  const isVotingPage = window.location.pathname === '/vote' || 
+                      window.location.pathname === '/costume-vote' ||
+                      window.location.search.includes('vote=true');
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -44,6 +50,11 @@ function App() {
     url.searchParams.delete('admin');
     window.history.replaceState({}, '', url.toString());
   };
+
+  // If this is the voting page, show only the voting component
+  if (isVotingPage) {
+    return <CostumeVoting />;
+  }
 
   return (
     <div className={styles.App}>
