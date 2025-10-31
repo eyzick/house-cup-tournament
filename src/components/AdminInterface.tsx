@@ -35,6 +35,7 @@ const GameActions: GameAction[] = [
   { key: 'take_out_trash', label: 'Take Out Trash', points: 10, reason: 'Take out trash' },
   { key: 'shotgun_drink', label: 'Shotgun Drink', points: 10, reason: 'Shotgun drink' },
   { key: 'take_shot', label: 'Take Shot', points: 10, reason: 'Take shot' },
+  { key: 'take_jello_shot', label: 'Take Jello Shot', points: 5, reason: 'Take jello shot' },
   { key: 'break_lego_set', label: 'Break Lego Set', points: -1000, reason: 'Break Lego set' },
   { key: 'take_dog_out', label: 'Play fetch wtih Liana', points: 20, reason: 'Play fetch wtih Liana'},
   { key: 'win_chess_game', label: 'Win Chess Game', points: 30, reason: 'Win chess game' },
